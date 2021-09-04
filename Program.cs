@@ -6,102 +6,140 @@ namespace DeveloperPracticalTest
 {
     class Program
     {
-        public List<Customer> customers = new List<Customer>();
+        List<Customer> customers = new List<Customer>();
+        static int tableWidth = 75;
 
-        public void searchCustomers()
+
+
+        void PrintLine()
         {
-            Console.WriteLine("Search customer by first name/last name:");
-            string searchText = Console.ReadLine();
+            Console.WriteLine(new string('-', tableWidth));
+        }
 
-            List<Customer> searchResults = customers.FindAll(x => x.FirstName.Contains(searchText) || x.LastName.Contains(searchText));
+        void PrintRow(params string[] columns)
+        {
+            int width = (tableWidth - columns.Length) / columns.Length;
+            string row = "|";
 
-            foreach (Customer c in searchResults)
+            foreach (string column in columns)
             {
-                Console.WriteLine($"\n{c.CustomerId}\t{c.FirstName} {c.LastName}");
+                row += AlignCentre(column, width) + "|";
+            }
+
+            Console.WriteLine(row);
+        }
+
+        string AlignCentre(string text, int width)
+        {
+            text = text.Length > width ? text.Substring(0, width - 3) + "..." : text;
+
+            if (string.IsNullOrEmpty(text))
+            {
+                return new string(' ', width);
+            }
+            else
+            {
+                return text.PadRight(width - (width - text.Length) / 2).PadLeft(width);
             }
         }
 
-        public void createCustomer()
+        void createCustomer()
         {
-
+            // Inputs required to create a customer
             string userName;
             string firstName;
             string lastName;
             string phoneNumber;
             DateTime dateOfBirth = new DateTime();
 
-            bool invalidFlag = true;
-            do
+
+            while (true)
             {
-                Console.WriteLine("\nEnter username:");
-                userName = Console.ReadLine().Trim();
-
-                Regex r = new Regex("^[a-zA-Z0-9]*$");
-                if (userName == "" || userName.Length < 5 || userName.Length > 20 || !r.IsMatch(userName))
+                try
                 {
-                    Console.WriteLine("Invalid username: Should only contain letter or number, must between 5 and 20 characters");
+                    Console.WriteLine("\nEnter username:");
+                    userName = Console.ReadLine().Trim();
+
+                    Regex r = new Regex("^[a-zA-Z0-9]*$");
+
+                    if (userName == "" || userName.Length < 5 || userName.Length > 20 || !r.IsMatch(userName))
+                    {
+                        throw new Exception("Invalid username: Should only contain letter or number, must between 5 and 20 characters");
+                    }
+                    else if (customers.Exists(x => x.Username == userName))
+                    {
+                        throw new Exception("Username already taken");
+                    }
+                    break;
                 }
-                else if (customers.Exists(x => x.Username == userName))
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Username already taken");
+                    Console.WriteLine(ex.Message ?? "Invalid username");
                 }
-                else
-                {
-                    invalidFlag = false;
-                }
-            } while (invalidFlag);
+            }
 
 
-            invalidFlag = true;
-            do
+
+            while (true)
             {
-                Console.WriteLine("\nEnter first name:");
-                firstName = Console.ReadLine().Trim();
-                Regex r = new Regex("^[0-9]*$");
-                if (firstName == "" || r.IsMatch(firstName))
+                try
                 {
-                    Console.WriteLine("Invalid firstName: Cannot be blank and no numbers");
+                    Console.WriteLine("\nEnter first name:");
+                    firstName = Console.ReadLine().Trim();
+                    Regex r = new Regex("^[0-9]*$");
+                    if (firstName == "" || r.IsMatch(firstName))
+                    {
+                        throw new Exception("Invalid firstName: Cannot be blank and no numbers");
+                    }
+                    break;
                 }
-                else
+                catch (Exception ex)
                 {
-                    invalidFlag = false;
+                    Console.WriteLine(ex.Message ?? "Invalid first name");
                 }
-            } while (invalidFlag);
+            }
 
-            invalidFlag = true;
-            do
+            while (true)
             {
-                Console.WriteLine("\nEnter last name:");
-                lastName = Console.ReadLine().Trim();
-                Regex r = new Regex("^[0-9]*$");
-                if (lastName == "" || r.IsMatch(lastName))
+                try
                 {
-                    Console.WriteLine("Invalid lastName: Cannot be blank and no numbers");
+                    Console.WriteLine("\nEnter last name:");
+                    lastName = Console.ReadLine().Trim();
+                    Regex r = new Regex("^[0-9]*$");
+                    if (lastName == "" || r.IsMatch(lastName))
+                    {
+                        throw new Exception("Invalid lastName: Cannot be blank and no numbers");
+                    }
+                    break;
                 }
-                else
+                catch (Exception ex)
                 {
-                    invalidFlag = false;
+                    Console.WriteLine(ex.Message ?? "Invalid last name");
                 }
-            } while (invalidFlag);
+            }
 
-            invalidFlag = true;
-            do
+
+            while (true)
             {
-                Console.WriteLine("\nEnter phone number:");
-                phoneNumber = Console.ReadLine().Trim();
-                Regex r = new Regex("^[0-9]*$");
-                if (phoneNumber == "" || !r.IsMatch(phoneNumber))
+                try
                 {
-                    Console.WriteLine("Invalid phoneNumber: Cannot be blank and only valid Australian landline or mobile numbers");
+                    Console.WriteLine("\nEnter phone number:");
+                    phoneNumber = Console.ReadLine().Trim();
+                    Regex r = new Regex("^[0-9]*$");
+                    if (phoneNumber == "" || !r.IsMatch(phoneNumber))
+                    {
+                        throw new Exception("Invalid phoneNumber: Cannot be blank and only valid Australian landline or mobile numbers");
+                    }
+                    break;
                 }
-                else
+                catch (Exception ex)
                 {
-                    invalidFlag = false;
+                    Console.WriteLine(ex.Message ?? "Invalid phone number");
                 }
-            } while (invalidFlag);
+            }
 
-            invalidFlag = true;
-            do
+
+            while (true)
             {
                 try
                 {
@@ -114,20 +152,17 @@ namespace DeveloperPracticalTest
                         Int32.Parse(dob[1]),
                         Int32.Parse(dob[0])
                         );
-                    if (dateOfBirth.Subtract(new DateTime()).TotalDays > 40150 || dateOfBirth.Subtract(new DateTime()).TotalDays <= 0)
+                    if (DateTime.Now.Subtract(dateOfBirth).TotalDays > 40150 || DateTime.Now.Subtract(dateOfBirth).TotalDays <= 0)
                     {
-                        Console.WriteLine("Age cannot be more than 110 years");
+                        throw new Exception("Age cannot be more than 110 years");
                     }
-                    else
-                    {
-                        invalidFlag = false;
-                    }
+                    break;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Invalid Date Format");
+                    Console.WriteLine(ex.Message ?? "Invalid Date Format");
                 }
-            } while (invalidFlag);
+            }
 
             Customer customer = new Customer(
                 userName,
@@ -137,38 +172,55 @@ namespace DeveloperPracticalTest
                 dateOfBirth
                 );
 
-            Console.WriteLine($"A customer with ID({customer.CustomerId}) and username({userName}) created");
+            Console.WriteLine($"A customer with ID {customer.CustomerId} and username {userName} created");
             customers.Add(customer);
 
         }
-        static void Main(string[] args)
-        {
 
-            Program run = new Program();
+        void searchCustomers()
+        {
+            Console.WriteLine("Search customer by first name/last name:");
+            string searchText = Console.ReadLine();
+
+            List<Customer> searchResults = customers.FindAll(x => x.FirstName.Contains(searchText) || x.LastName.Contains(searchText));
+
+            PrintLine();
+            PrintRow("ID", "First Name", "Last Name", "Phone Number");
+            PrintLine();
+            foreach (Customer c in searchResults)
+            {
+                PrintRow(c.CustomerId.ToString(), c.FirstName, c.LastName, c.PhoneNumber);
+            }
+            PrintLine();
+        }
+
+        void printMenu()
+        {
+            Console.WriteLine("\nCustomer Management System");
+            Console.WriteLine("1. Add new customer");
+            Console.WriteLine("2. Search Customer");
+            Console.WriteLine("3. Edit Customer");
+            Console.WriteLine("4. Add customer from a Json file");
+            Console.WriteLine("5. Exit");
+        }
+        public void run()
+        {
 
             while (true)
             {
-
-                Console.WriteLine("\nCustomer Management System");
-                Console.WriteLine("1. Add new customer");
-                Console.WriteLine("2. Search Customer");
-                Console.WriteLine("3. Edit Customer");
-                Console.WriteLine("4. Add customer from a Json file");
-                Console.WriteLine("5. Exit");
-
+                printMenu();
                 Console.WriteLine("\nEnter choice:");
-                int choice;
                 try
                 {
-                    choice = Convert.ToInt32(Console.ReadLine());
+                    int choice = Convert.ToInt32(Console.ReadLine());
                     switch (choice)
                     {
                         case 1:
-                            run.createCustomer();
+                            createCustomer();
                             break;
 
                         case 2:
-                            run.searchCustomers();
+                            searchCustomers();
                             break;
 
                         case 5:
@@ -187,6 +239,11 @@ namespace DeveloperPracticalTest
                 }
             }
 
+        }
+        static void Main(string[] args)
+        {
+            Program program = new Program();
+            program.run();
         }
     }
 }
