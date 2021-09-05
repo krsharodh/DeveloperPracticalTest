@@ -43,7 +43,7 @@ namespace DeveloperPracticalTest
                 $"Customer ID: {CustomerId}\n" +
                 $"Username: {Username}\n" +
                 $"First Name: {FirstName}\n" +
-                $"Last Name: { LastName}\n" +
+                $"Last Name: {LastName}\n" +
                 $"Phone Number: {PhoneNumber}\n" +
                 $"Date Of Birth: {DateOfBirth.ToShortDateString()}";
         }

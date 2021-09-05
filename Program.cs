@@ -9,6 +9,7 @@ namespace DeveloperPracticalTest
     class Program
     {
         List<Customer> customers = new List<Customer>();
+        List<CallNote> callNotes = new List<CallNote>();
         static int tableWidth = 75;
 
         void PrintLine()
@@ -221,17 +222,11 @@ namespace DeveloperPracticalTest
                         throw new Exception("Customer not found !");
                     }
 
-                    string userName = getUsername(true, customers[customerIndex].Username);
-                    string firstName = getName("first name", true);
-                    string lastName = getName("last name", true);
-                    string phoneNumber = getPhoneNumber(true);
-                    DateTime dateOfBirth = getDateOfBirth(true);
-
-                    customers[customerIndex].Username = userName;
-                    customers[customerIndex].FirstName = firstName;
-                    customers[customerIndex].LastName = lastName;
-                    customers[customerIndex].PhoneNumber = phoneNumber;
-                    customers[customerIndex].DateOfBirth = dateOfBirth;
+                    customers[customerIndex].Username = getUsername(true, customers[customerIndex].Username);
+                    customers[customerIndex].FirstName = getName("first name", true);
+                    customers[customerIndex].LastName = getName("last name", true);
+                    customers[customerIndex].PhoneNumber = getPhoneNumber(true);
+                    customers[customerIndex].DateOfBirth = getDateOfBirth(true);
 
                     Console.WriteLine(customers[customerIndex]);
                     Console.WriteLine($"Customer details updated successfully");
@@ -286,6 +281,79 @@ namespace DeveloperPracticalTest
 
         void addCallNote()
         {
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("\nPlease enter the customer ID:");
+                    int customerID = Convert.ToInt32(Console.ReadLine());
+                    var customerIndex = customers.FindIndex(x => x.CustomerId == customerID);
+                    if (customerIndex < 0)
+                    {
+                        throw new Exception("Customer not found !");
+                    }
+
+                    Console.WriteLine("\nPlease select one of the following");
+                    Console.WriteLine("1. Existing Issue");
+                    Console.WriteLine("2. New Issue");
+
+                    int choice = Convert.ToInt32(Console.ReadLine());
+
+                    switch (choice)
+                    {
+                        case 1:
+                            Console.WriteLine($"Existing Call Notes for {customers[customerIndex].FirstName} {customers[customerIndex].LastName}");
+                            List<CallNote> callNotesTemp = callNotes.FindAll(x => x.CustomerId == customerID);
+
+                            PrintLine();
+                            PrintRow("Call Note ID", "Parent Call Note ID", "Text");
+                            PrintLine();
+                            foreach (CallNote c in callNotesTemp)
+                            {
+                                PrintRow(c.CustomerId.ToString(), c.ParentCallNoteId.ToString(), c.Text);
+                            }
+                            PrintLine();
+
+                            Console.WriteLine("Please Enter Issue ID");
+                            int issueID = Convert.ToInt32(Console.ReadLine());
+                            var callNoteIndex = callNotes.FindIndex(x => x.CallNoteId == customerID);
+
+                            if (callNoteIndex < 0)
+                            {
+                                throw new Exception("Call Note not found");
+                            }
+
+                            Console.WriteLine("Please Enter Call Note Text");
+                            string t1 = Console.ReadLine();
+
+                            CallNote callNote1 = new CallNote(issueID, customerID, t1);
+                            callNotes.Add(callNote1);
+
+                            Console.WriteLine("Call Note Added Successfully");
+                            break;
+
+                        case 2:
+                            Console.WriteLine("Please Enter Call Note Text");
+                            string t2 = Console.ReadLine();
+
+                            CallNote callNote2 = new CallNote(customerID, t2);
+                            callNotes.Add(callNote2);
+
+                            Console.WriteLine("Call Note Added Successfully");
+                            break;
+
+                        default:
+                            Console.WriteLine("Please enter a valid choice");
+                            break;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                return;
+            }
 
         }
 
