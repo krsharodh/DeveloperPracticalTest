@@ -10,9 +10,9 @@ namespace DeveloperPracticalTest
     {
         List<Customer> customers = new List<Customer>();
 
-        public List<Customer> getCustomers ()
+        public Customer getCustomerByID(int id)
         {
-            return customers;
+            return customers.Find(x => x.CustomerId == id);
         }
 
         string getUsername(bool editMode = false, string prevUsername = "")

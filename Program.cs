@@ -18,7 +18,8 @@ namespace DeveloperPracticalTest
         public void runCustomerManagementSystem()
         {
             CustomerController customer = new CustomerController();
-            CallNoteController callNote = new CallNoteController();
+            CallNoteController callNote = new CallNoteController(customer);
+
             while (true)
             {
                 printMenu();
@@ -45,7 +46,7 @@ namespace DeveloperPracticalTest
                             break;
 
                         case 5:
-                            callNote.addCallNote(customer.getCustomers());
+                            callNote.addCallNote();
                             break;
 
                         case 6:

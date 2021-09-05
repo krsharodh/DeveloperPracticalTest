@@ -14,7 +14,15 @@ namespace DeveloperPracticalTest
         public string PhoneNumber { get; set; }
         public DateTime DateOfBirth { get; set; }
 
-
+        public Customer()
+        {
+            CustomerId = 0;
+            Username = "";
+            FirstName = "";
+            LastName = "";
+            PhoneNumber = "";
+            DateOfBirth = new DateTime();
+        }
 
         public Customer(string username, string firstName, string lastName, string phoneNumber, DateTime dateOfBirth)
         {
