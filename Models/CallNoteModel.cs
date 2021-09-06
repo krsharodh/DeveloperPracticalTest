@@ -4,19 +4,19 @@ using System.Text;
 
 namespace DeveloperPracticalTest
 {
-    class CallNote
-    {        
+    class CallNoteModel : ICallNoteModel
+    {
         public static int CallNoteIdSeed { get; set; } = 1;
 
         public int CallNoteId { get; set; }
 
-        public int ?ParentCallNoteId { get; set; }
+        public int? ParentCallNoteId { get; set; }
 
         public int CustomerId { get; set; }
-        
+
         public string Text { get; set; }
 
-        public CallNote(int parentCallNoteId, int customerId, string text)
+        public CallNoteModel(int parentCallNoteId, int customerId, string text)
         {
             CallNoteId = CallNoteIdSeed;
             CallNoteIdSeed++;
@@ -25,7 +25,7 @@ namespace DeveloperPracticalTest
             Text = text;
         }
 
-        public CallNote(int customerId, string text)
+        public CallNoteModel(int customerId, string text)
         {
             CallNoteId = CallNoteIdSeed;
             CallNoteIdSeed++;

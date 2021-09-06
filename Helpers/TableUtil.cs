@@ -6,16 +6,28 @@ namespace DeveloperPracticalTest
 {
     class TableUtil
     {
-        static int tableWidth = 75;
+        const int TABLE_WIDTH = 75;
+        
+        public int TableWidth { get; set; }
 
-        public static void PrintLine()
+        public TableUtil ()
         {
-            Console.WriteLine(new string('-', tableWidth));
+            TableWidth = TABLE_WIDTH;
         }
 
-        public static void PrintRow(params string[] columns)
+        public TableUtil(int tableWidth)
         {
-            int width = (tableWidth - columns.Length) / columns.Length;
+            TableWidth = tableWidth;
+        }
+
+        public void PrintLine()
+        {
+            Console.WriteLine(new string('-', TableWidth));
+        }
+
+        public void PrintRow(params string[] columns)
+        {
+            int width = (TableWidth - columns.Length) / columns.Length;
             string row = "|";
 
             foreach (string column in columns)
@@ -26,7 +38,7 @@ namespace DeveloperPracticalTest
             Console.WriteLine(row);
         }
 
-        public static string AlignCentre(string text, int width)
+        public string AlignCentre(string text, int width)
         {
             text = text.Length > width ? text.Substring(0, width - 3) + "..." : text;
 

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DeveloperPracticalTest
 {
-    class Customer
+    public class CustomerModel : ICustomerModel
     {
         public static int CustomerIdSeed { get; set; } = 1;
         public int CustomerId { get; set; }
@@ -14,7 +14,7 @@ namespace DeveloperPracticalTest
         public string PhoneNumber { get; set; }
         public DateTime DateOfBirth { get; set; }
 
-        public Customer()
+        public CustomerModel()
         {
             CustomerId = 0;
             Username = "";
@@ -24,7 +24,7 @@ namespace DeveloperPracticalTest
             DateOfBirth = new DateTime();
         }
 
-        public Customer(string username, string firstName, string lastName, string phoneNumber, DateTime dateOfBirth)
+        public CustomerModel(string username, string firstName, string lastName, string phoneNumber, DateTime dateOfBirth)
         {
             Username = username;
             FirstName = firstName;
@@ -47,7 +47,7 @@ namespace DeveloperPracticalTest
 
         public override string ToString()
         {
-            return 
+            return
                 $"Customer ID: {CustomerId}\n" +
                 $"Username: {Username}\n" +
                 $"First Name: {FirstName}\n" +

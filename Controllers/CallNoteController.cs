@@ -1,20 +1,23 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace DeveloperPracticalTest
 {
     class CallNoteController
     {
         CustomerController CustomerHandler;
+        List<CallNoteModel> callNotes = new List<CallNoteModel>();
 
         public CallNoteController (CustomerController customerHandler)
         {
             CustomerHandler = customerHandler;
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .CreateLogger();
         }
-        List<CallNote> callNotes = new List<CallNote>();
 
-        Customer getCustomerData()
+        CustomerModel getCustomerData()
         {
             while (true)
             {
@@ -23,7 +26,7 @@ namespace DeveloperPracticalTest
                     Console.WriteLine("\nPlease enter the customer ID:");
                     int customerID = Convert.ToInt32(Console.ReadLine());
 
-                    Customer customer = CustomerHandler.getCustomerByID(customerID);
+                    CustomerModel customer = CustomerHandler.getCustomerByID(customerID);
                     if (customer == null)
                     {
                         throw new Exception("Customer not found !");
@@ -32,7 +35,7 @@ namespace DeveloperPracticalTest
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Log.Information(ex.Message);
                 } 
             }
         }
@@ -44,19 +47,21 @@ namespace DeveloperPracticalTest
             Console.WriteLine("2. New Issue");
         }
 
-        void printCallNotes (Customer customer)
+        void printCallNotes (CustomerModel customer)
         {
             Console.WriteLine($"Existing Call Notes for {customer.FirstName} {customer.LastName}");
-            List<CallNote> callNotesTemp = callNotes.FindAll(x => x.CustomerId == customer.CustomerId);
+            List<CallNoteModel> callNotesTemp = callNotes.FindAll(x => x.CustomerId == customer.CustomerId);
 
-            TableUtil.PrintLine();
-            TableUtil.PrintRow("Call Note ID", "Parent Call Note ID", "Text");
-            TableUtil.PrintLine();
-            foreach (CallNote c in callNotesTemp)
+            TableUtil tableUtil = new TableUtil();
+
+            tableUtil.PrintLine();
+            tableUtil.PrintRow("Call Note ID", "Parent Call Note ID", "Text");
+            tableUtil.PrintLine();
+            foreach (CallNoteModel c in callNotesTemp)
             {
-                TableUtil.PrintRow(c.CallNoteId.ToString(), c.ParentCallNoteId.ToString(), c.Text);
+                tableUtil.PrintRow(c.CallNoteId.ToString(), c.ParentCallNoteId.ToString(), c.Text);
             }
-            TableUtil.PrintLine();
+            tableUtil.PrintLine();
         }
 
         public int getCallNoteID()
@@ -67,7 +72,7 @@ namespace DeveloperPracticalTest
                 {
                     Console.WriteLine("Please Enter Issue ID");
                     int issueID = Convert.ToInt32(Console.ReadLine());
-                    CallNote callNote = callNotes.Find(x => x.CallNoteId == issueID);
+                    CallNoteModel callNote = callNotes.Find(x => x.CallNoteId == issueID);
 
                     if (callNote == null)
                     {
@@ -77,7 +82,7 @@ namespace DeveloperPracticalTest
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Log.Information(ex.Message);
                 }
             }
         }
@@ -93,14 +98,14 @@ namespace DeveloperPracticalTest
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Log.Information(ex.Message);
                 }
             }
         }
 
         public void addCallNote()
         {
-            Customer customer = getCustomerData();
+            CustomerModel customer = getCustomerData();
             
             while (true)
             {
@@ -108,29 +113,30 @@ namespace DeveloperPracticalTest
                 {  
                     printMenu();
                     int choice = Convert.ToInt32(Console.ReadLine());
+                    Log.Information($"User selects option {choice}");
 
                     switch (choice)
                     {
                         case 1:
                             printCallNotes(customer);
                             int callNoteID = getCallNoteID();
-                            callNotes.Add(new CallNote(callNoteID, customer.CustomerId, getCallNoteText()));
+                            callNotes.Add(new CallNoteModel(callNoteID, customer.CustomerId, getCallNoteText()));
                             break;
 
                         case 2:
-                            CallNote callNote2 = new CallNote(customer.CustomerId, getCallNoteText());
+                            CallNoteModel callNote2 = new CallNoteModel(customer.CustomerId, getCallNoteText());
                             callNotes.Add(callNote2);
                             break;
 
                         default:
                             throw new Exception("Please enter a valid choice");
                     }
-                    Console.WriteLine("Call Note Added Successfully");
+                    Log.Information("Call Note Added Successfully");
                     return;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Log.Information(ex.Message);
                 }
             }
         }

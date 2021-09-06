@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,11 +7,18 @@ using System.Text.RegularExpressions;
 
 namespace DeveloperPracticalTest
 {
-    class CustomerController
+    public class CustomerController : ICustomerController
     {
-        List<Customer> customers = new List<Customer>();
+        List<CustomerModel> customers = new List<CustomerModel>();
 
-        public Customer getCustomerByID(int id)
+        public CustomerController()
+        {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .CreateLogger();
+        }
+
+        public CustomerModel getCustomerByID(int id)
         {
             return customers.Find(x => x.CustomerId == id);
         }
@@ -39,7 +47,7 @@ namespace DeveloperPracticalTest
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message ?? "Invalid username");
+                    Log.Information(ex.Message ?? "Invalid username");
                 }
             }
             return userName;
@@ -63,7 +71,7 @@ namespace DeveloperPracticalTest
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message ?? $"Invalid {promptString}");
+                    Log.Information(ex.Message ?? $"Invalid {promptString}");
                 }
             }
             return name;
@@ -87,13 +95,13 @@ namespace DeveloperPracticalTest
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message ?? "Invalid phone number");
+                    Log.Information(ex.Message ?? "Invalid phone number");
                 }
             }
             return phoneNumber;
         }
 
-        DateTime getDateUtil(string dateString)
+        public DateTime getDateUtil(string dateString)
         {
             DateTime date = new DateTime();
             try
@@ -108,7 +116,7 @@ namespace DeveloperPracticalTest
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Invalid Date");
+                Log.Information(ex.Message ?? "Invalid Date");
             }
             return date;
         }
@@ -132,7 +140,7 @@ namespace DeveloperPracticalTest
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message ?? "Invalid Date Format");
+                    Log.Information(ex.Message ?? "Invalid Date Format");
                 }
             }
             return dateOfBirth;
@@ -147,7 +155,7 @@ namespace DeveloperPracticalTest
             string phoneNumber = getPhoneNumber();
             DateTime dateOfBirth = getDateOfBirth();
 
-            Customer customer = new Customer(
+            CustomerModel customer = new CustomerModel(
                 userName,
                 firstName,
                 lastName,
@@ -156,9 +164,10 @@ namespace DeveloperPracticalTest
                 );
 
             customers.Add(customer);
-
+            
+            Console.WriteLine("");
+            Log.Information("Customer with following details created successfully\n");
             Console.WriteLine(customer);
-            Console.WriteLine($"Customer created successfully");
         }
 
         public void searchCustomers()
@@ -166,16 +175,18 @@ namespace DeveloperPracticalTest
             Console.WriteLine("Search customer by first name/last name:");
             string searchText = Console.ReadLine();
 
-            List<Customer> searchResults = customers.FindAll(x => x.FirstName.Contains(searchText) || x.LastName.Contains(searchText));
+            List<CustomerModel> searchResults = customers.FindAll(x => x.FirstName.Contains(searchText) || x.LastName.Contains(searchText));
 
-            TableUtil.PrintLine();
-            TableUtil.PrintRow("ID", "First Name", "Last Name", "Phone Number");
-            TableUtil.PrintLine();
-            foreach (Customer c in searchResults)
+            TableUtil tableUtil = new TableUtil();
+
+            tableUtil.PrintLine();
+            tableUtil.PrintRow("ID", "First Name", "Last Name", "Phone Number");
+            tableUtil.PrintLine();
+            foreach (CustomerModel c in searchResults)
             {
-                TableUtil.PrintRow(c.CustomerId.ToString(), c.FirstName, c.LastName, c.PhoneNumber);
+                tableUtil.PrintRow(c.CustomerId.ToString(), c.FirstName, c.LastName, c.PhoneNumber);
             }
-            TableUtil.PrintLine();
+            tableUtil.PrintLine();
         }
 
         public void editCustomer()
@@ -200,12 +211,12 @@ namespace DeveloperPracticalTest
                     customers[customerIndex].DateOfBirth = getDateOfBirth(true);
 
                     Console.WriteLine(customers[customerIndex]);
-                    Console.WriteLine($"Customer details updated successfully");
+                    Log.Information($"Customer details updated successfully");
                     return;
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message ?? "Invalid ID");
+                    Log.Information(ex.Message ?? "Invalid ID");
                 }
 
             }
@@ -227,7 +238,7 @@ namespace DeveloperPracticalTest
                         int customerCount = 0;
                         foreach (var item in array)
                         {
-                            Customer c = new Customer(
+                            CustomerModel c = new CustomerModel(
                                     $"{item.username}",
                                     $"{item.firstName}",
                                     $"{item.lastName}",
@@ -239,12 +250,12 @@ namespace DeveloperPracticalTest
                             customerCount++;
                         }
 
-                        Console.WriteLine($"{customerCount} customers added successfully");
+                        Log.Information($"{customerCount} customers added successfully");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    Log.Information(ex.Message);
                 }
                 return;
             }
