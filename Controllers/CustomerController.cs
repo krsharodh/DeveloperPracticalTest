@@ -232,7 +232,7 @@ namespace DeveloperPracticalTest
                 );
 
             customers.Add(customer);
-            
+
             Console.WriteLine("");
             Log.Information("Customer with following details created successfully\n");
             Console.WriteLine(customer);
@@ -286,6 +286,7 @@ namespace DeveloperPracticalTest
                     customers[customerIndex].PhoneNumber = getPhoneNumber(true);
                     customers[customerIndex].DateOfBirth = getDateOfBirth(true);
 
+                    Console.WriteLine();
                     Console.WriteLine(customers[customerIndex]);
                     Log.Information($"Customer details updated successfully");
                     return;
@@ -339,10 +340,12 @@ namespace DeveloperPracticalTest
                                     getDateUtil($"{item.dataOfBirth}")
                                     );
                             customers.Add(c);
+                            Console.WriteLine();
                             Console.Write(c);
                             customerCount++;
                         }
 
+                        Console.WriteLine();
                         Log.Information($"{customerCount} customers added successfully");
                     }
                 }
