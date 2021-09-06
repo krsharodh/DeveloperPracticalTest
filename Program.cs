@@ -7,13 +7,21 @@ using System.IO;
 
 namespace DeveloperPracticalTest
 {
+    /// <summary>
+    /// Main class of the application
+    /// </summary>
     class Program
     {
+        /// <summary>
+        /// Stating point of the program
+        /// </summary>
+        /// <param name="args">String Array as command line arguments</param>
         static void Main(string[] args)
         {
             var builder = new ConfigurationBuilder();
             BuildConfig(builder);
 
+            // Sets up SeriLog
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(builder.Build())
                 .Enrich.FromLogContext()
@@ -22,6 +30,7 @@ namespace DeveloperPracticalTest
 
             Log.Logger.Information("Application Starting");
 
+            // Dependency Injection setup to inject services used in the application
             var host = Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
                 {
@@ -33,6 +42,10 @@ namespace DeveloperPracticalTest
             svc.run();
         }
 
+        /// <summary>
+        /// Sets up the Config File: appsettings.json
+        /// </summary>
+        /// <param name="builder">Builder Object</param>
         static void BuildConfig(IConfigurationBuilder builder)
         {
             builder.SetBasePath(Directory.GetCurrentDirectory())

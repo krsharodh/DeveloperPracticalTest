@@ -4,11 +4,18 @@ using System.Collections.Generic;
 
 namespace DeveloperPracticalTest
 {
+    /// <summary>
+    /// Handles various functionalities of call note management
+    /// </summary>
     class CallNoteController
     {
         CustomerController CustomerHandler;
         List<CallNoteModel> callNotes = new List<CallNoteModel>();
 
+        /// <summary>
+        /// Call Note Controller Constructor
+        /// </summary>
+        /// <param name="customerHandler"></param>
         public CallNoteController (CustomerController customerHandler)
         {
             CustomerHandler = customerHandler;
@@ -17,29 +24,9 @@ namespace DeveloperPracticalTest
                 .CreateLogger();
         }
 
-        CustomerModel getCustomerData()
-        {
-            while (true)
-            {
-                try
-                {
-                    Console.WriteLine("\nPlease enter the customer ID:");
-                    int customerID = Convert.ToInt32(Console.ReadLine());
-
-                    CustomerModel customer = CustomerHandler.getCustomerByID(customerID);
-                    if (customer == null)
-                    {
-                        throw new Exception("Customer not found !");
-                    }
-                    return customer;
-                }
-                catch (Exception ex)
-                {
-                    Log.Information(ex.Message);
-                } 
-            }
-        }
-
+        /// <summary>
+        /// Prints menu of the Call Note functionality
+        /// </summary>
         void printMenu()
         {
             Console.WriteLine("\nPlease select one of the following");
@@ -47,6 +34,10 @@ namespace DeveloperPracticalTest
             Console.WriteLine("2. New Issue");
         }
 
+        /// <summary>
+        /// Prints Call Notes for the customer in the form of a table
+        /// </summary>
+        /// <param name="customer">Customer object for which call notes need to printed</param>
         void printCallNotes (CustomerModel customer)
         {
             Console.WriteLine($"Existing Call Notes for {customer.FirstName} {customer.LastName}");
@@ -64,6 +55,10 @@ namespace DeveloperPracticalTest
             tableUtil.PrintLine();
         }
 
+        /// <summary>
+        /// Gets call note ID as input from the user and validates it
+        /// </summary>
+        /// <returns>Valid Call Note ID</returns>
         public int getCallNoteID()
         {
             while (true)
@@ -87,6 +82,10 @@ namespace DeveloperPracticalTest
             }
         }
 
+        /// <summary>
+        /// Gets valid call note text as a input from the user
+        /// </summary>
+        /// <returns>Valid Call Note text</returns>
         public string getCallNoteText()
         {
             while (true)
@@ -103,9 +102,12 @@ namespace DeveloperPracticalTest
             }
         }
 
+        /// <summary>
+        /// Entry point for adding new call note
+        /// </summary>
         public void addCallNote()
         {
-            CustomerModel customer = getCustomerData();
+            CustomerModel customer = CustomerHandler.getCustomerData();
             
             while (true)
             {
@@ -117,12 +119,14 @@ namespace DeveloperPracticalTest
 
                     switch (choice)
                     {
+                        // Add Call Note to Existing Issue
                         case 1:
                             printCallNotes(customer);
                             int callNoteID = getCallNoteID();
                             callNotes.Add(new CallNoteModel(callNoteID, customer.CustomerId, getCallNoteText()));
                             break;
 
+                        // Adds Call Note as New Issue
                         case 2:
                             CallNoteModel callNote2 = new CallNoteModel(customer.CustomerId, getCallNoteText());
                             callNotes.Add(callNote2);

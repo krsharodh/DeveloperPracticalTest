@@ -4,16 +4,28 @@ using System;
 
 namespace DeveloperPracticalTest
 {
+    /// <summary>
+    /// Service for accessing customer management system
+    /// </summary>
     class CmsService : ICmsService
     {
         private readonly ILogger<CmsService> Log;
         private readonly IConfiguration Config;
 
+        /// <summary>
+        /// CmsService constructor
+        /// </summary>
+        /// <param name="log">Serilog Object</param>
+        /// <param name="config">Config Object</param>
         public CmsService(ILogger<CmsService> log, IConfiguration config)
         {
             Log = log;
             Config = config;
         }
+
+        /// <summary>
+        /// Prints the menu items
+        /// </summary>
         void PrintMenu()
         {
             Console.WriteLine("\nCustomer Management System");
@@ -25,8 +37,12 @@ namespace DeveloperPracticalTest
             Console.WriteLine("6. Exit");
         }
 
+        /// <summary>
+        /// Entry point to Customer Magement System
+        /// </summary>
         public void run()
         {
+            // Creating instances to access methods of Customer and CallNote Controller classes 
             CustomerController customer = new CustomerController();
             CallNoteController callNote = new CallNoteController(customer);
 
